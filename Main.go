@@ -2,21 +2,23 @@ package main
 
 import("fmt")
 
-func F(value int) *int {
-
-	p:=new(int)
-	*p=10
-	return p
-}
-
 func main() {
 
-	fmt.Println("Hello World")
+	arr:=[10][10]int{}
 
-	test := F(10)
+	for i:=0 ; i<10;i++{
+		for j:=0;j<10;j++{
+			arr[i][j]=i*j
+		}
 
-	fmt.Println(*test)
+	}
 
+	for i:=0 ; i<10;i++{
+		for j:=0;j<10;j++{
+			fmt.Printf("%d ",arr[i][j])
+		}
+		fmt.Println()
+	}
 
 
 }
