@@ -22,7 +22,7 @@ type Handler interface {
 	ServerHTTP(http.ResponseWriter,*http.Request)
 }
 
-func (r* router) ServerHTTP(w http.ResponseWriter, req *http.Request) {
+func (r* router) ServerHTTP(w http.ResponseWriter,  req *http.Request) {
 	if m, ok := r.handlers[req.Method]; ok {
 		if h, ok := m[req.URL.Path]; ok {
 			//요청 URL 에 해당하는 핸들러 수행

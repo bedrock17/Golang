@@ -4,16 +4,13 @@ import(
 	"fmt"
 	"net/http"
 
-
 )
-
-
-
 
 func main() {
 
-
-
+	str:="Hello World"
+	fmt.Print()
+	fmt.Print(str)
 	fmt.Printf("Server Start")
 
 	http.HandleFunc("/",func(w http.ResponseWriter,r *http.Request){
