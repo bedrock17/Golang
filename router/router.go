@@ -1,7 +1,7 @@
 package router
 
 import "net/http"
-
+import "strings"
 import "fmt"
 
 type Handler interface {
@@ -24,15 +24,51 @@ func (router *Router) HandleFunc(method, pattern string, h http.HandlerFunc) {
 	m[pattern] = h
 }
 
+func match(pattern, path string) (bool, map[string]string) {
+
+	if pattern == path {
+		return true, nil
+	}
+
+	patterns := strings.Split(pattern, "/")
+	paths := strings.Split(path, "/")
+
+	if len(patterns) != len(paths) {
+		fmt.Println("1", len(patterns), len(paths))
+		fmt.Println("1", patterns, paths)
+		return false, nil
+	}
+
+	params := make(map[string]string)
+
+	for i := 0; i < len(patterns); i++ {
+		switch {
+		case patterns[i] == paths[i]:
+		case len(patterns[i]) > 0 && patterns[i][0] == ':':
+			fmt.Println("param!", patterns[i], paths[i])
+			params[patterns[i][1:]] = paths[i]
+		default:
+			fmt.Println("2", patterns, paths)
+			return false, nil
+		}
+	}
+
+	return true, params
+
+}
+
 func (router *Router) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 
 	//debug
 	fmt.Println(req.Method, req.URL.Path)
 
-	if method, ok := router.Handlers[req.Method]; ok {
-		if handle, ok := method[req.URL.Path]; ok {
+	//	if method, ok := router.Handlers[req.Method]; ok {
+
+	for pattern, handler := range router.Handlers[req.Method] {
+		if ok, params := match(pattern, req.URL.Path); ok {
 			//요청 URL 에 해당하는 핸들러 수행
-			handle(res, req)
+			fmt.Println(pattern, params)
+			handler(res, req)
 			return
 		}
 	}
