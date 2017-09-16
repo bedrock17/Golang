@@ -1,9 +1,9 @@
 package main
 
-import(
+import (
+	"./router"
 	"fmt"
 	"net/http"
-	"./router"
 )
 
 func main() {
@@ -15,11 +15,18 @@ func main() {
 
 	mainRouter := &router.Router{make(map[string]map[string]http.HandlerFunc)}
 
-	mainRouter.HandleFunc("GET", "/", func(res http.ResponseWriter, req *http.Request) {
-		fmt.Fprintf(res, "Welcome!")
-		fmt.Println("Hello World end");
-	})
+	mainRouter.HandleFunc("GET", "/", index)
 
+	mainRouter.HandleFunc("GET", "/frontpage", frontpage)
 
-	http.ListenAndServe(":8080", mainRouter);
+	http.ListenAndServe(":8080", mainRouter)
+}
+
+func index(res http.ResponseWriter, req *http.Request) {
+	fmt.Fprintf(res, "Welcome!")
+	fmt.Println("Hello World end")
+}
+
+func frontpage(res http.ResponseWriter, req *http.Request) {
+	fmt.Fprintf(res, "It's Front Page!")
 }
