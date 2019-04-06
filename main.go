@@ -1,17 +1,24 @@
 package main
 
 import (
-	"./router"
 	"fmt"
 	"net/http"
+
+	"./config"
+	"./router"
 )
 
 func main() {
 
-	str := "Hello World"
-	fmt.Print()
-	fmt.Println(str)
-	fmt.Println("Server Start")
+	//서버 설정 로딩
+	var config config.Config
+	err := config.Load("serverconfig.ini")
+	if err != nil {
+		fmt.Println(err)
+	}
+	var serverPort string
+	serverPort = fmt.Sprintf(":%d", config.Port)
+	fmt.Printf("Server Start [%s] \n", serverPort)
 
 	mainRouter := &router.Router{make(map[string]map[string]http.HandlerFunc)}
 
@@ -22,7 +29,7 @@ func main() {
 
 	mainRouter.HandleFunc("GET", "/menu/:item", menu)
 
-	http.ListenAndServe(":8080", mainRouter)
+	http.ListenAndServe(serverPort, mainRouter)
 }
 
 func index(res http.ResponseWriter, req *http.Request) {
